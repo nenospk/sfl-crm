@@ -23,11 +23,6 @@ export default function InsertPage() {
   const [loading, setLoading] = useState(false);
 
   useEffect(async () => {
-    console.log("Success", success);
-    console.log("Error", error);
-  }, [success, error]);
-
-  useEffect(async () => {
     //console.log("CURRENT CUSTOMER", currentCustomer);
     //console.log("CURRENT SEARCH", currentSearch);
     if (currentCustomer && currentCustomer.phone != currentSearch) {
