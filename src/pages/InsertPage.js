@@ -1,0 +1,538 @@
+import React, { useState, useEffect } from "react";
+import { Formik, Field } from "formik";
+import * as Yup from "yup";
+import Navbar from "../components/Navbar";
+import { useFirestore } from "./Firestore.js";
+import logo from "../img/header_logo.svg";
+
+import stage_customer from "../img/stage_customer.svg";
+import stage_expansion from "../img/stage_expansion.svg";
+import stage_lead from "../img/stage_lead.svg";
+
+export default function InsertPage() {
+  const { addCustomer } = useFirestore();
+  const [currentCustomer, setCurrentCustomer] = useState();
+  const [currentSearch, setCurrentSearch] = useState("");
+  const [initialForm, setInitialForm] = useState();
+  const [error, setError] = useState();
+  const [success, setSuccess] = useState();
+  const [loading, setLoading] = useState(false);
+
+  useEffect(async () => {
+    //console.log("CURRENT CUSTOMER", currentCustomer);
+    //console.log("CURRENT SEARCH", currentSearch);
+    if (currentCustomer.phone != currentSearch) {
+      setCurrentCustomer();
+      setInitialForm({
+        myref: "",
+        sale_person: "",
+        sale_branch: "",
+        phone: "",
+        name: "",
+        stage: "Lead",
+        lead_reason: "",
+        lead_sales: "",
+        customer_sales: "",
+        customer_category: []
+      });
+    } else {
+      setInitialForm({
+        myref:
+          currentCustomer && currentCustomer.myref != undefined
+            ? currentCustomer.myref
+            : "",
+        sale_person: "",
+        sale_branch: "",
+        phone: currentSearch && currentSearch != undefined ? currentSearch : "",
+        name:
+          currentCustomer && currentCustomer.name != undefined
+            ? currentCustomer.name
+            : "",
+        stage:
+          currentCustomer && currentCustomer.stage != undefined
+            ? currentCustomer.stage
+            : "Lead",
+        lead_reason:
+          currentCustomer && currentCustomer.lead_reason != undefined
+            ? currentCustomer.lead_reason
+            : "",
+        lead_sales:
+          currentCustomer && currentCustomer.lead_sales != undefined
+            ? currentCustomer.lead_sales
+            : "",
+        customer_sales: "",
+        customer_category: []
+      });
+    }
+  }, [currentCustomer, currentSearch]);
+
+  const formValidation = Yup.object().shape({
+    phone: Yup.string().required("*กรุณากรอก"),
+    name: Yup.string().required("*กรุณากรอก"),
+    stage: Yup.string().required("*กรุณากรอก"),
+    sale_person: Yup.string().required("*กรุณากรอก"),
+    sale_branch: Yup.string().required("*กรุณากรอก"),
+    lead_reason: Yup.string().when("stage", {
+      is: value => value == "Lead",
+      then: Yup.string().required("*กรุณากรอก")
+    }),
+    lead_sales: Yup.string().when("stage", {
+      is: value => value == "Lead",
+      then: Yup.string().required("*กรุณากรอก")
+    }),
+    customer_sales: Yup.string().when("stage", {
+      is: value => value == "Customer" || value == "Expansion",
+      then: Yup.string().required("*กรุณากรอก")
+    })
+  });
+
+  return (
+    <>
+      <div className="header">
+        <img src={logo} className="logo" />
+      </div>
+
+      <div className="holder">
+        <div className="notice-box">
+          <label className="success">{success}</label>
+          <label className="error">{error}</label>
+        </div>
+        <Formik
+          enableReinitialize
+          initialValues={{ ...initialForm }}
+          validationSchema={formValidation}
+          onSubmit={async (values, { setSubmitting }) => {
+            console.log(values);
+            setSubmitting(true);
+            setLoading(true);
+            try {
+              const result = await addCustomer(values, currentCustomer);
+              console.log(result);
+              setSubmitting(false);
+              setLoading(false);
+              if (result.status == "success") {
+                setSuccess(result.message);
+                setError();
+                //resetForm({});
+              } else {
+                setSuccess();
+                setError(result.message);
+              }
+            } catch {
+              setSubmitting(false);
+              setLoading(false);
+              //setSuccess();
+              //setError("เกิดข้อผิดพลาด");
+            }
+            return;
+          }}
+        >
+          {({
+            values,
+            errors,
+            touched,
+            handleChange,
+            handleBlur,
+            handleSubmit,
+            isSubmitting,
+            setFieldValue,
+            resetForm
+          }) => (
+            <form onSubmit={handleSubmit} className="insert-form">
+              <div className="form-header">
+                <h1>CRM </h1>
+                <div>สวัสดี, SPORT FOR LIFE</div>
+              </div>
+              <div>
+                <div className="content">
+                  <label className="formError">
+                    {errors.myref && errors.myref}
+                  </label>
+                  <input
+                    type="hidden"
+                    name="myref"
+                    placeholder="รหัสลูกค้า"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.myref || ""}
+                  />
+                </div>
+                <label className="formError">
+                  {errors.phone && errors.phone}
+                </label>
+                <Auto
+                  setCurrentCustomer={setCurrentCustomer}
+                  setCurrentSearch={setCurrentSearch}
+                />
+                <div className="content">
+                  <label className="formError">
+                    {errors.name && errors.name}
+                  </label>
+                  <input
+                    type="text"
+                    name="name"
+                    placeholder="ชื่อ"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.name || ""}
+                  />
+                </div>
+              </div>
+              <label className="formError">
+                {errors.stage && errors.stage}
+              </label>
+              <div className="radio-tile-group">
+                <div className="input-container">
+                  <input
+                    className="radio-button"
+                    type="radio"
+                    name="stage"
+                    value="Lead"
+                    checked={
+                      values.stage === "Lead" || values.stage == undefined
+                    }
+                    onChange={() => setFieldValue("stage", "Lead")}
+                  />
+                  <div className="radio-tile">
+                    <img src={stage_lead} />
+                    Lead
+                  </div>
+                </div>
+                <div className="input-container">
+                  <input
+                    className="radio-button"
+                    type="radio"
+                    name="stage"
+                    value="Customer"
+                    checked={values.stage === "Customer"}
+                    onChange={() => setFieldValue("stage", "Customer")}
+                  />
+                  <div className="radio-tile">
+                    <img src={stage_customer} />
+                    Customer
+                  </div>
+                </div>
+                <div className="input-container">
+                  <input
+                    className="radio-button"
+                    type="radio"
+                    name="stage"
+                    value="Expansion"
+                    checked={values.stage === "Expansion"}
+                    onChange={() => setFieldValue("stage", "Expansion")}
+                  />
+                  <div className="radio-tile">
+                    <img src={stage_expansion} />
+                    Expansion
+                  </div>
+                </div>
+              </div>
+              {values.stage == "Lead" || values.stage == undefined ? (
+                <div>
+                  <label className="formError">
+                    {errors.lead_reason && errors.lead_reason}
+                  </label>
+                  <select
+                    name="lead_reason"
+                    value={values.lead_reason}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    style={{ display: "block" }}
+                  >
+                    <option value="" label="เหตุผล">
+                      เหตุผล
+                    </option>
+                    <option value="เหตุผล1" label="เหตุผล1">
+                      เหตุผล1
+                    </option>
+                    <option value="เหตุผล2" label="เหตุผล2">
+                      เหตุผล1
+                    </option>
+                    <option value="เหตุผล3" label="เหตุผล3">
+                      เหตุผล1
+                    </option>
+                  </select>
+                  <label className="formError">
+                    {errors.lead_sales && errors.lead_sales}
+                  </label>
+                  <select
+                    name="lead_sales"
+                    value={values.lead_sales}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    style={{ display: "block" }}
+                  >
+                    <option value="" label="ยอดซื้อ">
+                      ยอดซื้อ
+                    </option>
+                    <option value="1-10,000 บาท" label="1-10,000 บาท">
+                      1-10,000 บาท
+                    </option>
+                    <option value="10,001-50,000 บาท" label="10,001-50,000 บาท">
+                      10,001-50,000 บาท
+                    </option>
+                    <option
+                      value="50,001-100,000 บาท"
+                      label="50,001-100,000 บาท"
+                    >
+                      50,001-100,000 บาท
+                    </option>
+                    <option
+                      value="100,001-300,000 บาท"
+                      label="100,001-300,000 บาท"
+                    >
+                      100,001-300,000 บาท
+                    </option>
+                    <option
+                      value="300,001-500,000 บาท"
+                      label="300,001-500,000 บาท"
+                    >
+                      300,001-500,000 บาท
+                    </option>
+                    <option
+                      value="มากกว่า 500,000 บาท"
+                      label="มากกว่า 500,000 บาท"
+                    >
+                      มากกว่า 500,000 บาท
+                    </option>
+                  </select>
+                </div>
+              ) : (
+                ""
+              )}
+              {values.stage == "Customer" || values.stage == "Expansion" ? (
+                <div>
+                  <label className="formError">
+                    {errors.customer_sales && errors.customer_sales}
+                  </label>
+                  <div className="content">
+                    <label>
+                      <label className="formError" />
+                    </label>
+                    <input
+                      type="text"
+                      name="customer_sales"
+                      placeholder="ยอดซื้อ"
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      value={values.customer_sales}
+                    />
+                  </div>
+                  <label className="formError">
+                    {errors.customer_category && errors.customer_category}
+                  </label>
+                  <div className="checkbox-tile-group">
+                    <div className="input-checkbox-container">
+                      <Field
+                        type="checkbox"
+                        className="checkbox-button"
+                        name="customer_category"
+                        value="จักรยาน"
+                      />
+                      <div className="checkbox-tile">จักรยาน</div>
+                    </div>
+                    <div className="input-checkbox-container">
+                      <Field
+                        type="checkbox"
+                        className="checkbox-button"
+                        name="customer_category"
+                        value="เฟรมจักรยาน"
+                      />
+                      <div className="checkbox-tile">เฟรมจักรยาน</div>
+                    </div>
+                    <div className="input-checkbox-container">
+                      <Field
+                        type="checkbox"
+                        className="checkbox-button"
+                        name="customer_category"
+                        value="ส่วนประกอบ"
+                      />
+                      <div className="checkbox-tile">ส่วนประกอบ</div>
+                    </div>
+                    <div className="input-checkbox-container">
+                      <Field
+                        type="checkbox"
+                        className="checkbox-button"
+                        name="customer_category"
+                        value="เครื่องแต่งกาย"
+                      />
+                      <div className="checkbox-tile">เครื่องแต่งกาย</div>
+                    </div>
+                    <div className="input-checkbox-container">
+                      <Field
+                        type="checkbox"
+                        className="checkbox-button"
+                        name="customer_category"
+                        value="อุปกรณ์ตกแต่ง"
+                      />
+                      <div className="checkbox-tile">อุปกรณ์ตกแต่ง </div>
+                    </div>
+                    <div className="input-checkbox-container">
+                      <Field
+                        type="checkbox"
+                        className="checkbox-button"
+                        name="customer_category"
+                        value="สมาร์ทวอทช์"
+                      />
+                      <div className="checkbox-tile">สมาร์ทวอทช์</div>
+                    </div>
+                    <div className="input-checkbox-container">
+                      <Field
+                        type="checkbox"
+                        className="checkbox-button"
+                        name="customer_category"
+                        value="บริการ"
+                      />
+                      <div className="checkbox-tile">บริการ</div>
+                    </div>
+                    <div className="input-checkbox-container">
+                      <Field
+                        type="checkbox"
+                        className="checkbox-button"
+                        name="customer_category"
+                        value="อื่นๆ"
+                      />
+                      <div className="checkbox-tile">อื่นๆ</div>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                ""
+              )}
+              <label className="formError">
+                {errors.sale_branch && errors.sale_branch}
+              </label>
+              <select
+                name="sale_branch"
+                value={values.sale_branch || ""}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                style={{ display: "block" }}
+              >
+                <option value="" label="สาขา">
+                  สาขา
+                </option>
+                <option value="PTK" label="PTK">
+                  PTK
+                </option>
+                <option value="LKB" label="LKB">
+                  LKB
+                </option>
+                <option value="UCL" label="UCL">
+                  UCL
+                </option>
+              </select>
+              <label className="formError">
+                {errors.sale_person && errors.sale_person}
+              </label>
+              <select
+                name="sale_person"
+                value={values.sale_person || ""}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                style={{ display: "block" }}
+              >
+                <option value="" label="ชื่อเซล">
+                  ชื่อเซล
+                </option>
+                <option value="DEMO SALE1" label="DEMO SALE1">
+                  DEMO SALE1
+                </option>
+                <option value="DEMO SALE2" label="DEMO SALE2">
+                  DEMO SALE2
+                </option>
+                <option value="DEMO SALE3" label="DEMO SALE3">
+                  DEMO SALE3
+                </option>
+              </select>
+              <div className="actionButton">
+                <button
+                  className="mainButton"
+                  type="submit"
+                  disabled={isSubmitting}
+                >
+                  {currentCustomer ? "อัพเดท" : "เพิ่ม"}
+                </button>
+                <button
+                  type="reset"
+                  className="resetButton"
+                  onClick={() => {
+                    resetForm;
+                    setCurrentCustomer();
+                  }}
+                >
+                  ล้างค่า
+                </button>
+              </div>
+            </form>
+          )}
+        </Formik>
+      </div>
+      <Navbar active={"กรอกข้อมูล"} />
+    </>
+  );
+}
+
+const Auto = props => {
+  const { customerList } = useFirestore();
+  const [display, setDisplay] = useState(false);
+  const [search, setSearch] = useState("");
+  const [options, setOptions] = useState();
+
+  useEffect(async () => {
+    setOptions(customerList);
+  }, [customerList]);
+
+  const selectAuto = option => {
+    setSearch(option.phone);
+    props.setCurrentSearch(option.phone);
+    props.setCurrentCustomer(option);
+    setDisplay(false);
+  };
+
+  return (
+    <div className="autocomplete-holder">
+      <input
+        onBlur={props.handleBlur}
+        onClick={() => {
+          setDisplay(!display);
+        }}
+        value={search}
+        onChange={event => {
+          props.handleChange;
+          props.setCurrentSearch(event.target.value);
+          if (event.target.value != "") setDisplay(true);
+          else setDisplay(false);
+          setSearch(event.target.value);
+        }}
+        placeholder="เบอร์โทรศัพท์"
+      />
+      <div className={"autocomplete"}>
+        {display &&
+          options
+            .filter(
+              option =>
+                option.phone &&
+                option.phone.toLowerCase().indexOf(search.toLowerCase()) > -1
+            )
+            .slice(0, 5)
+            .map((option, index) => {
+              return (
+                <div
+                  className={"autocomplete-item"}
+                  key={index}
+                  onClick={() => {
+                    selectAuto(option);
+                  }}
+                >
+                  <div className="phone">{option.phone}</div>
+                  <div className="minor">
+                    {option.name} - {option.stage}
+                  </div>
+                </div>
+              );
+            })}
+      </div>
+    </div>
+  );
+};

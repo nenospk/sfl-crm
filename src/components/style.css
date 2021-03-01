@@ -1,0 +1,53 @@
+.navigator {
+  width: 100%;
+  position: fixed;
+  bottom: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  font-size: 0.75rem;
+  background-color: #fff;
+}
+
+.navigator a {
+  color: black !important;
+}
+
+.nav-item {
+  width: 25%;
+  height: 60px;
+  border-top: 1px solid #eee;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-holder {
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-flow: row wrap;
+}
+
+.nav_content {
+  margin-top: 3px;
+}
+
+.active .nav_content {
+  font-weight: bold;
+}
+
+.line-break {
+  width: 100%;
+}
+
+.active .nav_status {
+  z-index: 0;
+  position: absolute;
+  display: block;
+  width: 80px;
+  height: 80px;
+  background: #c2986e;
+  border-radius: 100px 100px 0 0;
+}
