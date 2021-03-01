@@ -31,15 +31,14 @@ export function DataProvider({ children }) {
   }, []);
 
   async function addCustomer(newData, currentCustomer) {
-    console.log("A");
-    console.log("1", newData);
+    //console.log("1", newData);
     let docref = newData.myref;
     delete newData.myref;
     let customer_transactions = [];
     if (currentCustomer) {
       customer_transactions = currentCustomer.customer_transactions;
     }
-    console.log("2", newData);
+    //console.log("2", newData);
 
     if (newData.stage == "Customer" || newData.stage == "Expansion") {
       let transaction = {
@@ -56,7 +55,7 @@ export function DataProvider({ children }) {
 
     delete newData.customer_sales;
     delete newData.customer_category;
-    console.log("3", newData);
+    //console.log("3", newData);
     if (docref) {
       console.log("UPDATE", newData);
       try {
