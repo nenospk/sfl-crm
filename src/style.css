@@ -242,3 +242,68 @@ select:focus {
   color: rgb(255, 92, 92);
   font-size: 0.8rem;
 }
+
+.loading-screen {
+  width: 100%;
+  height: 100%;
+  background: #fff;
+  position: fixed;
+  opacity: 1;
+  z-index: 1;
+  text-align: center;
+}
+
+.loading-screen img {
+  animation: rotation 2s infinite ease;
+}
+
+@keyframes rotation {
+  0% {
+    transform: rotate(-20deg);
+  }
+  25% {
+    transform: rotate(15deg);
+  }
+  40% {
+    transform: rotate(-15deg);
+  }
+  80% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(-20deg);
+  }
+}
+
+.loading-holder {
+  height: fit-content;
+  top: 35%;
+  margin: 0 auto;
+  position: relative;
+}
+
+.status-screen {
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  position: fixed;
+  opacity: 1;
+  z-index: 1;
+  text-align: center;
+}
+
+.status-holder {
+  width: 70%;
+  height: fit-content;
+  top: 35%;
+  border-radius: 25px;
+  padding: 45px 10px;
+  background: #fff;
+  color: black;
+  margin: 0 auto;
+  position: relative;
+}
+
+.status-img {
+  padding: 15px;
+}

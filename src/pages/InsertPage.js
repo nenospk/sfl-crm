@@ -9,19 +9,28 @@ import stage_customer from "../img/stage_customer.svg";
 import stage_expansion from "../img/stage_expansion.svg";
 import stage_lead from "../img/stage_lead.svg";
 
+import LoadingBar from "../components/LoadingBar";
+import SuccessBar from "../components/SuccessBar";
+import ErrorBar from "../components/ErrorBar";
+
 export default function InsertPage() {
   const { addCustomer } = useFirestore();
   const [currentCustomer, setCurrentCustomer] = useState();
   const [currentSearch, setCurrentSearch] = useState("");
   const [initialForm, setInitialForm] = useState();
-  const [error, setError] = useState();
-  const [success, setSuccess] = useState();
+  const [error, setError] = useState(false);
+  const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  useEffect(async () => {
+    console.log("Success", success);
+    console.log("Error", error);
+  }, [success, error]);
 
   useEffect(async () => {
     //console.log("CURRENT CUSTOMER", currentCustomer);
     //console.log("CURRENT SEARCH", currentSearch);
-    if (currentCustomer.phone != currentSearch) {
+    if (currentCustomer && currentCustomer.phone != currentSearch) {
       setCurrentCustomer();
       setInitialForm({
         myref: "",
@@ -88,6 +97,9 @@ export default function InsertPage() {
 
   return (
     <>
+      {loading && <LoadingBar />}
+      {success && <SuccessBar setSuccess={setSuccess} />}
+      {error && <ErrorBar setError={setError} />}
       <div className="header">
         <img src={logo} className="logo" />
       </div>
@@ -105,24 +117,17 @@ export default function InsertPage() {
             console.log(values);
             setSubmitting(true);
             setLoading(true);
-            try {
-              const result = await addCustomer(values, currentCustomer);
-              console.log(result);
-              setSubmitting(false);
-              setLoading(false);
-              if (result.status == "success") {
-                setSuccess(result.message);
-                setError();
-                //resetForm({});
-              } else {
-                setSuccess();
-                setError(result.message);
-              }
-            } catch {
-              setSubmitting(false);
-              setLoading(false);
-              //setSuccess();
-              //setError("เกิดข้อผิดพลาด");
+            const result = await addCustomer(values, currentCustomer);
+            console.log(result);
+            setSubmitting(false);
+            setLoading(false);
+            if (result.status == "success") {
+              setSuccess(true);
+              setError(false);
+              resetForm();
+            } else {
+              setSuccess(false);
+              setError(true);
             }
             return;
           }}
