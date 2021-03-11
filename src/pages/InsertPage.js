@@ -17,6 +17,7 @@ export default function InsertPage() {
   const { addCustomer } = useFirestore();
   const [currentCustomer, setCurrentCustomer] = useState();
   const [currentSearch, setCurrentSearch] = useState("");
+  const [phoneSearch, setPhoneSearch] = useState("");
   const [initialForm, setInitialForm] = useState();
   const [error, setError] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -70,8 +71,19 @@ export default function InsertPage() {
     }
   }, [currentCustomer, currentSearch]);
 
+  function numberWithCommas(num) {
+    if (num) {
+      var num_parts = num
+        .toString()
+        .replace(/,/g, "")
+        .split(".");
+      num_parts[0] = num_parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      return num_parts.join(".");
+    } else return "";
+  }
+
   const formValidation = Yup.object().shape({
-    phone: Yup.string().required("*กรุณากรอก"),
+    phone: Yup.string().test("len", "กรุณากรอก", val => val.length === 10),
     name: Yup.string().required("*กรุณากรอก"),
     stage: Yup.string().required("*กรุณากรอก"),
     sale_person: Yup.string().required("*กรุณากรอก"),
@@ -108,6 +120,8 @@ export default function InsertPage() {
           enableReinitialize
           initialValues={{ ...initialForm }}
           validationSchema={formValidation}
+          validateOnChange={false}
+          validateOnBlur={false}
           onSubmit={async (values, { setSubmitting }) => {
             console.log(values);
             setSubmitting(true);
@@ -163,6 +177,8 @@ export default function InsertPage() {
                 <Auto
                   setCurrentCustomer={setCurrentCustomer}
                   setCurrentSearch={setCurrentSearch}
+                  phoneSearch={phoneSearch}
+                  setPhoneSearch={setPhoneSearch}
                 />
                 <div className="content">
                   <label className="formError">
@@ -192,6 +208,16 @@ export default function InsertPage() {
                       values.stage === "Lead" || values.stage == undefined
                     }
                     onChange={() => setFieldValue("stage", "Lead")}
+                    disabled={
+                      (currentCustomer &&
+                        currentCustomer.stage == "Customer" &&
+                        values.stage == "Customer") ||
+                      (currentCustomer &&
+                        currentCustomer.stage == "Expansion" &&
+                        values.stage == "Expansion")
+                        ? "disabled"
+                        : null
+                    }
                   />
                   <div className="radio-tile">
                     <img src={stage_lead} />
@@ -206,6 +232,13 @@ export default function InsertPage() {
                     value="Customer"
                     checked={values.stage === "Customer"}
                     onChange={() => setFieldValue("stage", "Customer")}
+                    disabled={
+                      currentCustomer &&
+                      currentCustomer.stage == "Expansion" &&
+                      values.stage == "Expansion"
+                        ? "disabled"
+                        : null
+                    }
                   />
                   <div className="radio-tile">
                     <img src={stage_customer} />
@@ -220,6 +253,13 @@ export default function InsertPage() {
                     value="Expansion"
                     checked={values.stage === "Expansion"}
                     onChange={() => setFieldValue("stage", "Expansion")}
+                    disabled={
+                      currentCustomer &&
+                      currentCustomer.stage == "Lead" &&
+                      values.stage == "Lead"
+                        ? "disabled"
+                        : null
+                    }
                   />
                   <div className="radio-tile">
                     <img src={stage_expansion} />
@@ -315,7 +355,7 @@ export default function InsertPage() {
                       placeholder="ยอดซื้อ"
                       onChange={handleChange}
                       onBlur={handleBlur}
-                      value={values.customer_sales}
+                      value={numberWithCommas(values.customer_sales)}
                     />
                   </div>
                   <label className="formError">
@@ -457,8 +497,9 @@ export default function InsertPage() {
                   type="reset"
                   className="resetButton"
                   onClick={() => {
-                    resetForm;
                     setCurrentCustomer();
+                    setPhoneSearch("");
+                    resetForm;
                   }}
                 >
                   ล้างค่า
@@ -476,15 +517,32 @@ export default function InsertPage() {
 const Auto = props => {
   const { customerList } = useFirestore();
   const [display, setDisplay] = useState(false);
-  const [search, setSearch] = useState("");
   const [options, setOptions] = useState();
 
   useEffect(async () => {
     setOptions(customerList);
   }, [customerList]);
 
+  useEffect(async () => {
+    //console.log(props.phoneSearch);
+    let result = objectSearch(props.phoneSearch, options);
+    if (result != -1) {
+      props.setCurrentSearch(result.phone);
+      props.setCurrentCustomer(result);
+    }
+  }, [props.phoneSearch]);
+
+  function objectSearch(nameKey, myArray) {
+    for (var i = 0; i < myArray.length; i++) {
+      if (myArray[i].phone === nameKey) {
+        return myArray[i];
+      }
+    }
+    return -1;
+  }
+
   const selectAuto = option => {
-    setSearch(option.phone);
+    props.setPhoneSearch(option.phone);
     props.setCurrentSearch(option.phone);
     props.setCurrentCustomer(option);
     setDisplay(false);
@@ -497,13 +555,13 @@ const Auto = props => {
         onClick={() => {
           setDisplay(!display);
         }}
-        value={search}
+        value={props.phoneSearch}
         onChange={event => {
           props.handleChange;
           props.setCurrentSearch(event.target.value);
           if (event.target.value != "") setDisplay(true);
           else setDisplay(false);
-          setSearch(event.target.value);
+          props.setPhoneSearch(event.target.value);
         }}
         placeholder="เบอร์โทรศัพท์"
       />
@@ -513,7 +571,9 @@ const Auto = props => {
             .filter(
               option =>
                 option.phone &&
-                option.phone.toLowerCase().indexOf(search.toLowerCase()) > -1
+                option.phone
+                  .toLowerCase()
+                  .indexOf(props.phoneSearch.toLowerCase()) > -1
             )
             .slice(0, 5)
             .map((option, index) => {

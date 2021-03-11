@@ -27,8 +27,6 @@ export default function ViewPage() {
         <table>
           <thead>
             <tr>
-              <th>ลบ</th>
-              <th>แก้ไข</th>
               <th>#</th>
               <th>ชื่อลูกค้า</th>
               <th>โทรศัพท์</th>
@@ -36,18 +34,14 @@ export default function ViewPage() {
               <th>ยอดคาดหวัง</th>
               <th>สาขา</th>
               <th>Sale</th>
+              <th>ลบ</th>
+              <th>แก้ไข</th>
             </tr>
           </thead>
           <tbody>
             {customerList &&
               customerList.map((item, index) => (
                 <tr key={index}>
-                  <td>
-                    <a>ลบ</a>
-                  </td>
-                  <td>
-                    <a>แก้ไข</a>
-                  </td>
                   <td>{index + 1}</td>
                   <td>{item.name && item.name}</td>
                   <td>{item.phone && item.phone}</td>
@@ -55,6 +49,12 @@ export default function ViewPage() {
                   <td>{item.lead_sales && item.lead_sales}</td>
                   <td>{item.sale_branch && item.sale_branch}</td>
                   <td>{item.sale_person && item.sale_person}</td>
+                  <td>
+                    <a>ลบ</a>
+                  </td>
+                  <td>
+                    <a>แก้ไข</a>
+                  </td>
                 </tr>
               ))}
           </tbody>
