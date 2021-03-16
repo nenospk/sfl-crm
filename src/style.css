@@ -170,6 +170,10 @@ select:focus {
   margin-top: 10px;
 }
 
+.radio-tile img {
+  width: 30px;
+}
+
 .radio-tile-group {
   display: flex;
   justify-content: space-between;
@@ -182,6 +186,13 @@ select:focus {
 .input-container {
   position: relative;
   width: calc(32%);
+  height: 80px;
+  margin-bottom: 8px;
+}
+
+.input-container-channel {
+  position: relative;
+  width: calc(49%);
   height: 80px;
   margin-bottom: 8px;
 }
@@ -204,6 +215,10 @@ select:focus {
   width: 100%;
   margin: 0;
   cursor: pointer;
+}
+
+.radio-button.disabled {
+  background-color: #eee;
 }
 
 .radio-tile {
@@ -235,6 +250,13 @@ select:focus {
 .checkbox-button:checked + .checkbox-tile {
   color: black;
   background: #c2986e;
+  /*transform: scale(1.1, 1.1);*/
+}
+
+.radio-button:disabled + .radio-tile,
+.checkbox-button:disabled + .checkbox-tile {
+  color: black;
+  background: rgb(133, 133, 133);
   /*transform: scale(1.1, 1.1);*/
 }
 

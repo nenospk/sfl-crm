@@ -21,6 +21,7 @@ export function DataProvider({ children }) {
           //console.log(doc.data());
           list.push({ myref: doc.id, ...doc.data() });
         });
+        list = list.sort((a, b) => b.dt_lastupdate - a.dt_lastupdate);
         setCustomerList(list);
       },
       err => {
@@ -40,19 +41,28 @@ export function DataProvider({ children }) {
     }
     //console.log("2", newData);
 
+    newData.dt = moment().unix();
+    newData.lastupdate = moment().unix();
+
     if (newData.stage == "Customer" || newData.stage == "Expansion") {
       let transaction = {
+        customer_so: newData.customer_so,
         customer_sales: newData.customer_sales,
         customer_category: newData.customer_category,
         sale_person: newData.sale_person,
-        sale_branch: newData.sale_branch
+        sale_branch: newData.sale_branch,
+        channel: newData.channel,
+        dt: moment().unix()
       };
       customer_transactions.push(transaction);
+      delete newData.channel;
+      delete newData.dt;
       delete newData.sale_person;
       delete newData.sale_branch;
     }
     newData.customer_transactions = customer_transactions;
 
+    delete newData.customer_so;
     delete newData.customer_sales;
     delete newData.customer_category;
     //console.log("3", newData);

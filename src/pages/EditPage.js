@@ -19,7 +19,6 @@ import ErrorBar from "../components/ErrorBar";
 export default function InsertPage() {
   const { addCustomer } = useFirestore();
   const [currentCustomer, setCurrentCustomer] = useState();
-  const [currentStage, setCurrentStage] = useState();
   const [currentSearch, setCurrentSearch] = useState("");
   const [phoneSearch, setPhoneSearch] = useState("");
   const [initialForm, setInitialForm] = useState();
@@ -68,7 +67,9 @@ export default function InsertPage() {
             ? currentCustomer.name
             : "",
         stage:
-          currentStage && currentStage != undefined ? currentStage : "Lead",
+          currentCustomer && currentCustomer.stage != undefined
+            ? currentCustomer.stage
+            : "Lead",
         channel:
           currentCustomer && currentCustomer.channel != undefined
             ? currentCustomer.channel
@@ -90,7 +91,7 @@ export default function InsertPage() {
         customer_category: []
       });
     }
-  }, [currentCustomer, currentSearch, currentStage]);
+  }, [currentCustomer, currentSearch]);
 
   function numberWithCommas(num) {
     if (num) {
@@ -169,7 +170,6 @@ export default function InsertPage() {
               setSuccess(true);
               setError(false);
               currentSearch();
-              setCurrentStage();
               setCurrentCustomer();
               resetForm();
             } else {
@@ -215,7 +215,6 @@ export default function InsertPage() {
                 <Auto
                   setCurrentCustomer={setCurrentCustomer}
                   setCurrentSearch={setCurrentSearch}
-                  setCurrentStage={setCurrentStage}
                   phoneSearch={phoneSearch}
                   setPhoneSearch={setPhoneSearch}
                 />
@@ -240,11 +239,11 @@ export default function InsertPage() {
                 <div className="input-container">
                   <input
                     className={
-                      (currentStage &&
-                        currentStage == "Customer" &&
+                      (currentCustomer &&
+                        currentCustomer.stage == "Customer" &&
                         values.stage == "Customer") ||
-                      (currentStage &&
-                        currentStage == "Expansion" &&
+                      (currentCustomer &&
+                        currentCustomer.stage == "Expansion" &&
                         values.stage == "Expansion")
                         ? "radio-button disabled"
                         : "radio-button"
@@ -257,11 +256,11 @@ export default function InsertPage() {
                     }
                     onChange={() => setFieldValue("stage", "Lead")}
                     disabled={
-                      (currentStage &&
-                        currentStage == "Customer" &&
+                      (currentCustomer &&
+                        currentCustomer.stage == "Customer" &&
                         values.stage == "Customer") ||
-                      (currentStage &&
-                        currentStage == "Expansion" &&
+                      (currentCustomer &&
+                        currentCustomer.stage == "Expansion" &&
                         values.stage == "Expansion")
                         ? "disabled"
                         : null
@@ -274,21 +273,15 @@ export default function InsertPage() {
                 </div>
                 <div className="input-container">
                   <input
-                    className={
-                      currentStage &&
-                      currentStage == "Expansion" &&
-                      values.stage == "Expansion"
-                        ? "radio-button disabled"
-                        : "radio-button"
-                    }
+                    className={"radio-button"}
                     type="radio"
                     name="stage"
                     value="Customer"
                     checked={values.stage === "Customer"}
                     onChange={() => setFieldValue("stage", "Customer")}
                     disabled={
-                      currentStage &&
-                      currentStage == "Expansion" &&
+                      currentCustomer &&
+                      currentCustomer.stage == "Expansion" &&
                       values.stage == "Expansion"
                         ? "disabled"
                         : null
@@ -301,21 +294,15 @@ export default function InsertPage() {
                 </div>
                 <div className="input-container">
                   <input
-                    className={
-                      currentStage &&
-                      currentStage == "Lead" &&
-                      values.stage == "Lead"
-                        ? "radio-button disabled"
-                        : "radio-button"
-                    }
+                    className="radio-button"
                     type="radio"
                     name="stage"
                     value="Expansion"
                     checked={values.stage === "Expansion"}
                     onChange={() => setFieldValue("stage", "Expansion")}
                     disabled={
-                      currentStage &&
-                      currentStage == "Lead" &&
+                      currentCustomer &&
+                      currentCustomer.stage == "Lead" &&
                       values.stage == "Lead"
                         ? "disabled"
                         : null
@@ -344,22 +331,22 @@ export default function InsertPage() {
                     onBlur={handleBlur}
                     style={{ display: "block" }}
                   >
-                    <option value="" label="เหตุผล" key={"1"}>
+                    <option value="" label="เหตุผล">
                       เหตุผล
                     </option>
-                    <option value="ซื้อ" label="ซื้อ" key={"2"}>
+                    <option value="ซื้อ" label="ซื้อ">
                       ซื้อ
                     </option>
-                    <option value="สอบถาม" label="สอบถาม" key={"3"}>
+                    <option value="สอบถาม" label="สอบถาม">
                       สอบถาม
                     </option>
-                    <option value="ไม่เคยนำเข้า" label="ไม่เคยนำเข้า" key={"4"}>
+                    <option value="ไม่เคยนำเข้า" label="ไม่เคยนำเข้า">
                       ไม่เคยนำเข้า
                     </option>
-                    <option value="สินค้าหมด" label="สินค้าหมด" key={"5"}>
+                    <option value="สินค้าหมด" label="สินค้าหมด">
                       สินค้าหมด
                     </option>
-                    <option value="อื่นๆ" label="อื่นๆ" key={"6"}>
+                    <option value="อื่นๆ" label="อื่นๆ">
                       อื่นๆ
                     </option>
                   </select>
@@ -388,44 +375,36 @@ export default function InsertPage() {
                     onBlur={handleBlur}
                     style={{ display: "block" }}
                   >
-                    <option value="" label="ยอดซื้อ" key={"1"}>
+                    <option value="" label="ยอดซื้อ">
                       ยอดซื้อ
                     </option>
-                    <option value="1-10,000 บาท" label="1-10,000 บาท" key={"2"}>
+                    <option value="1-10,000 บาท" label="1-10,000 บาท">
                       1-10,000 บาท
                     </option>
-                    <option
-                      value="10,001-50,000 บาท"
-                      label="10,001-50,000 บาท"
-                      key={"3"}
-                    >
+                    <option value="10,001-50,000 บาท" label="10,001-50,000 บาท">
                       10,001-50,000 บาท
                     </option>
                     <option
                       value="50,001-100,000 บาท"
                       label="50,001-100,000 บาท"
-                      key={"4"}
                     >
                       50,001-100,000 บาท
                     </option>
                     <option
                       value="100,001-300,000 บาท"
                       label="100,001-300,000 บาท"
-                      key={"5"}
                     >
                       100,001-300,000 บาท
                     </option>
                     <option
                       value="300,001-500,000 บาท"
                       label="300,001-500,000 บาท"
-                      key={"6"}
                     >
                       300,001-500,000 บาท
                     </option>
                     <option
                       value="มากกว่า 500,000 บาท"
                       label="มากกว่า 500,000 บาท"
-                      key={"7"}
                     >
                       มากกว่า 500,000 บาท
                     </option>
@@ -680,7 +659,6 @@ const Auto = props => {
   }, [props.phoneSearch]);
 
   function objectSearch(nameKey, myArray) {
-    if (nameKey.length == 0 || myArray.length == 0) return -1;
     for (var i = 0; i < myArray.length; i++) {
       if (myArray[i].phone === nameKey) {
         return myArray[i];
@@ -693,19 +671,6 @@ const Auto = props => {
     props.setPhoneSearch(option.phone);
     props.setCurrentSearch(option.phone);
     props.setCurrentCustomer(option);
-    switch (option.stage) {
-      case "Lead":
-        props.setCurrentStage("Customer");
-        break;
-      case "Customer":
-        props.setCurrentStage("Expansion");
-        break;
-      case "Expansion":
-        props.setCurrentStage("Expansion");
-        break;
-      default:
-        props.setCurrentStage("Lead");
-    }
     setDisplay(false);
   };
 

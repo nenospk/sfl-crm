@@ -4,6 +4,11 @@ import { useFirestore } from "./Firestore.js";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import logo from "../img/header_logo.svg";
+import moment from "moment";
+
+import "react-date-range/dist/styles.css"; // main style file
+import "react-date-range/dist/theme/default.css"; // theme css file
+import { DateRangePicker } from "react-date-range";
 
 export default function ViewPage() {
   const { customerList } = useFirestore();
@@ -23,6 +28,10 @@ export default function ViewPage() {
         <div>สวัสดี, SPORT FOR LIFE</div>
       </div>
 
+      <div>
+        <DateRangePicker />
+      </div>
+
       <div className={"responsive"}>
         <table>
           <thead>
@@ -34,6 +43,8 @@ export default function ViewPage() {
               <th>ยอดคาดหวัง</th>
               <th>สาขา</th>
               <th>Sale</th>
+              <th>เพิ่มเมื่อ</th>
+              <th>อัพเดทล่าสุด</th>
               <th>ลบ</th>
               <th>แก้ไข</th>
             </tr>
@@ -49,6 +60,16 @@ export default function ViewPage() {
                   <td>{item.lead_sales && item.lead_sales}</td>
                   <td>{item.sale_branch && item.sale_branch}</td>
                   <td>{item.sale_person && item.sale_person}</td>
+                  <td>
+                    {item.dt &&
+                      moment.unix(item.dt).format("MM/DD/YYYY HH:mm:ss")}
+                  </td>
+                  <td>
+                    {item.dt_lastupdate &&
+                      moment
+                        .unix(item.dt_lastupdate)
+                        .format("MM/DD/YYYY HH:mm:ss")}
+                  </td>
                   <td>
                     <a>ลบ</a>
                   </td>
