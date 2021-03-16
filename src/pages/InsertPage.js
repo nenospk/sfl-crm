@@ -646,6 +646,7 @@ export default function InsertPage() {
                   onClick={() => {
                     setCurrentCustomer();
                     setPhoneSearch("");
+                    setCurrentStage();
                     resetForm;
                   }}
                 >
@@ -676,6 +677,8 @@ const Auto = props => {
     if (result != -1) {
       props.setCurrentSearch(result.phone);
       props.setCurrentCustomer(result);
+    } else {
+      props.setCurrentStage();
     }
   }, [props.phoneSearch]);
 

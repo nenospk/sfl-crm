@@ -329,3 +329,16 @@ select:focus {
 .status-img {
   padding: 15px;
 }
+
+.myPicker {
+  position: absolute;
+}
+
+.showDate {
+  display: block;
+  width: fit-content;
+  padding: 10px 20px;
+  margin-left: 25px;
+  font-size: 15px;
+  text-align: left;
+}

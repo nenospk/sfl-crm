@@ -8,16 +8,27 @@ import moment from "moment";
 
 import "react-date-range/dist/styles.css"; // main style file
 import "react-date-range/dist/theme/default.css"; // theme css file
-import { DateRangePicker } from "react-date-range";
+import { DateRange } from "react-date-range";
 
 export default function ViewPage() {
   const { customerList } = useFirestore();
+  const [filterList, setFilterList] = useState();
   const [currentCustomer, setCurrentCustomer] = useState();
   const [currentSearch, setCurrentSearch] = useState("");
   const [initialForm, setInitialForm] = useState();
   const [error, setError] = useState();
   const [success, setSuccess] = useState();
   const [loading, setLoading] = useState(false);
+  const [showPicker, setShowPicker] = useState(false);
+
+  const [selectedDate, setSelectedDate] = useState([
+    {
+      startDate: new Date(),
+      endDate: new Date(),
+      key: "selection"
+    }
+  ]);
+
   return (
     <>
       <div className="header">
@@ -29,7 +40,54 @@ export default function ViewPage() {
       </div>
 
       <div>
-        <DateRangePicker />
+        <button
+          onClick={() => setShowPicker(!showPicker)}
+          className={"showDate"}
+        >
+          เลือกวันที่
+        </button>
+        {/*
+        <div style={{ marginLeft: "25px" }}>
+          {selectedDate && moment(selectedDate.startDate).format("DD/MM/YYYY")}{" "}
+          - {selectedDate && moment(selectedDate.endDate).format("DD/MM/YYYY")}
+        </div>
+        */}
+        {showPicker && (
+          <div style={{ position: "relative" }}>
+            <DateRange
+              editableDateInputs={true}
+              onChange={item => {
+                setSelectedDate([item.selection]);
+                //console.log(item.selection);
+                let startDate = moment(item.selection.startDate).unix();
+                let endDate = moment(item.selection.endDate)
+                  .add(1, "days")
+                  .unix();
+
+                /*console.log(
+                  "start ",
+                  moment.unix(startDate).format("DD/MM/YYYY HH:mm:ss")
+                );
+                console.log(
+                  "end ",
+                  moment.unix(endDate).format("DD/MM/YYYY HH:mm:ss")
+                );
+                */
+                customerList.map(customer => {
+                  //console.log("DATE ", customer.dt);
+                });
+                setFilterList(
+                  customerList.filter(customer => {
+                    return startDate <= customer.dt && customer.dt <= endDate;
+                  })
+                );
+              }}
+              moveRangeOnFirstSelection={false}
+              ranges={selectedDate}
+              className={"myPicker"}
+            />
+          </div>
+        )}
       </div>
 
       <div className={"responsive"}>
@@ -50,34 +108,62 @@ export default function ViewPage() {
             </tr>
           </thead>
           <tbody>
-            {customerList &&
-              customerList.map((item, index) => (
-                <tr key={index}>
-                  <td>{index + 1}</td>
-                  <td>{item.name && item.name}</td>
-                  <td>{item.phone && item.phone}</td>
-                  <td>{item.stage && item.stage}</td>
-                  <td>{item.lead_sales && item.lead_sales}</td>
-                  <td>{item.sale_branch && item.sale_branch}</td>
-                  <td>{item.sale_person && item.sale_person}</td>
-                  <td>
-                    {item.dt &&
-                      moment.unix(item.dt).format("MM/DD/YYYY HH:mm:ss")}
-                  </td>
-                  <td>
-                    {item.dt_lastupdate &&
-                      moment
-                        .unix(item.dt_lastupdate)
-                        .format("MM/DD/YYYY HH:mm:ss")}
-                  </td>
-                  <td>
-                    <a>ลบ</a>
-                  </td>
-                  <td>
-                    <a>แก้ไข</a>
-                  </td>
-                </tr>
-              ))}
+            {filterList
+              ? filterList.map((item, index) => (
+                  <tr key={index}>
+                    <td>{index + 1}</td>
+                    <td>{item.name && item.name}</td>
+                    <td>{item.phone && item.phone}</td>
+                    <td>{item.stage && item.stage}</td>
+                    <td>{item.lead_sales && item.lead_sales}</td>
+                    <td>{item.sale_branch && item.sale_branch}</td>
+                    <td>{item.sale_person && item.sale_person}</td>
+                    <td>
+                      {item.dt &&
+                        moment.unix(item.dt).format("DD/MM/YYYY HH:mm:ss")}
+                    </td>
+                    <td>
+                      {item.dt_lastupdate &&
+                        moment
+                          .unix(item.dt_lastupdate)
+                          .format("DD/MM/YYYY HH:mm:ss")}
+                    </td>
+                    <td>
+                      <a>ลบ</a>
+                    </td>
+                    <td>
+                      <a>แก้ไข</a>
+                    </td>
+                  </tr>
+                ))
+              : customerList &&
+                customerList.map((item, index) => (
+                  <tr key={index}>
+                    <td>{index + 1}</td>
+                    <td>{item.name && item.name}</td>
+                    <td>{item.phone && item.phone}</td>
+                    <td>{item.stage && item.stage}</td>
+                    <td>{item.lead_sales && item.lead_sales}</td>
+                    <td>{item.sale_branch && item.sale_branch}</td>
+                    <td>{item.sale_person && item.sale_person}</td>
+                    <td>
+                      {item.dt &&
+                        moment.unix(item.dt).format("DD/MM/YYYY HH:mm:ss")}
+                    </td>
+                    <td>
+                      {item.dt_lastupdate &&
+                        moment
+                          .unix(item.dt_lastupdate)
+                          .format("DD/MM/YYYY HH:mm:ss")}
+                    </td>
+                    <td>
+                      <a>ลบ</a>
+                    </td>
+                    <td>
+                      <a>แก้ไข</a>
+                    </td>
+                  </tr>
+                ))}
           </tbody>
         </table>
       </div>
