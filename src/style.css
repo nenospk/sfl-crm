@@ -112,6 +112,25 @@ a {
   color: black !important;
 }
 
+thead > tr:nth-child(1) > th:nth-child(5) {
+  background-color: #ffdead;
+}
+thead > tr:nth-child(1) > th:nth-child(6) {
+  background-color: #ffc368;
+}
+thead > tr:nth-child(1) > th:nth-child(7) {
+  background-color: #f19a17;
+}
+thead > tr:nth-child(2) > th:nth-child(n) {
+  background-color: #ffdead;
+}
+thead > tr:nth-child(2) > th:nth-child(n + 5) {
+  background-color: #ffc368;
+}
+thead > tr:nth-child(2) > th:nth-child(n + 10) {
+  background-color: #f19a17;
+}
+
 input,
 select {
   width: 100%;
@@ -335,10 +354,19 @@ select:focus {
 }
 
 .showDate {
-  display: block;
+  display: inline-block;
   width: fit-content;
   padding: 10px 20px;
   margin-left: 25px;
+  font-size: 15px;
+  text-align: left;
+}
+
+.resetDate {
+  display: inline-block;
+  width: fit-content;
+  padding: 10px 20px;
+  margin-left: 10px;
   font-size: 15px;
   text-align: left;
 }

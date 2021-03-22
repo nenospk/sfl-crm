@@ -46,6 +46,9 @@ export default function ViewPage() {
         >
           เลือกวันที่
         </button>
+        <button onClick={() => setFilterList()} className={"resetDate"}>
+          ล้างค่า
+        </button>
         {/*
         <div style={{ marginLeft: "25px" }}>
           {selectedDate && moment(selectedDate.startDate).format("DD/MM/YYYY")}{" "}
@@ -94,17 +97,33 @@ export default function ViewPage() {
         <table>
           <thead>
             <tr>
-              <th>#</th>
-              <th>ชื่อลูกค้า</th>
-              <th>โทรศัพท์</th>
-              <th>สถานะ</th>
+              <th rowspan="2">#</th>
+              <th rowspan="2">ชื่อลูกค้า</th>
+              <th rowspan="2">โทรศัพท์</th>
+              <th rowspan="2">สถานะ</th>
+              <th colspan="4">Lead</th>
+              <th colspan="5">Customer</th>
+              <th colspan="5">Expansion</th>
+              <th rowspan="2">เพิ่มเมื่อ</th>
+              <th rowspan="2">อัพเดทล่าสุด</th>
+              <th rowspan="2">ลบ</th>
+              <th rowspan="2">แก้ไข</th>
+            </tr>
+            <tr>
               <th>ยอดคาดหวัง</th>
               <th>สาขา</th>
               <th>Sale</th>
-              <th>เพิ่มเมื่อ</th>
-              <th>อัพเดทล่าสุด</th>
-              <th>ลบ</th>
-              <th>แก้ไข</th>
+              <th>ช่องทาง</th>
+              <th>ยอด</th>
+              <th>หมวดหมู่</th>
+              <th>สาขา</th>
+              <th>Sale</th>
+              <th>ช่องทาง</th>
+              <th>ยอด</th>
+              <th>หมวดหมู่</th>
+              <th>สาขา</th>
+              <th>Sale</th>
+              <th>ช่องทาง</th>
             </tr>
           </thead>
           <tbody>
@@ -146,6 +165,111 @@ export default function ViewPage() {
                     <td>{item.lead_sales && item.lead_sales}</td>
                     <td>{item.sale_branch && item.sale_branch}</td>
                     <td>{item.sale_person && item.sale_person}</td>
+                    <td>{item.channel && item.channel}</td>
+                    <td>
+                      {item.customer_transactions &&
+                        item.customer_transactions.length > 0 &&
+                        item.customer_transactions
+                          .map(
+                            (item, my_index) =>
+                              my_index == 0 && <div>{item.customer_sales}</div>
+                          )
+                          .reduce((prev, curr) => [prev, "", curr], "")}
+                    </td>
+                    <td>
+                      {item.customer_transactions &&
+                        item.customer_transactions.length > 0 &&
+                        item.customer_transactions
+                          .map(
+                            (item, my_index) =>
+                              my_index == 0 && (
+                                <div>{item.customer_category.join(",")}</div>
+                              )
+                          )
+                          .reduce((prev, curr) => [prev, "", curr], "")}
+                    </td>
+                    <td>
+                      {item.customer_transactions &&
+                        item.customer_transactions.length > 0 &&
+                        item.customer_transactions
+                          .map(
+                            (item, my_index) =>
+                              my_index == 0 && <div>{item.sale_branch}</div>
+                          )
+                          .reduce((prev, curr) => [prev, "", curr], "")}
+                    </td>
+                    <td>
+                      {item.customer_transactions &&
+                        item.customer_transactions.length > 0 &&
+                        item.customer_transactions
+                          .map(
+                            (item, my_index) =>
+                              my_index == 0 && <div>{item.sale_person}</div>
+                          )
+                          .reduce((prev, curr) => [prev, "", curr], "")}
+                    </td>
+                    <td>
+                      {item.customer_transactions &&
+                        item.customer_transactions.length > 0 &&
+                        item.customer_transactions
+                          .map(
+                            (item, my_index) =>
+                              my_index == 0 && <div>{item.channel}</div>
+                          )
+                          .reduce((prev, curr) => [prev, "", curr], "")}
+                    </td>
+                    <td>
+                      {item.customer_transactions &&
+                        item.customer_transactions.length > 0 &&
+                        item.customer_transactions
+                          .map(
+                            (item, my_index) =>
+                              my_index > 0 && <div>{item.customer_sales}</div>
+                          )
+                          .reduce((prev, curr) => [prev, "", curr])}
+                    </td>
+                    <td>
+                      {item.customer_transactions &&
+                        item.customer_transactions.length > 0 &&
+                        item.customer_transactions
+                          .map(
+                            (item, my_index) =>
+                              my_index > 0 && (
+                                <div>{item.customer_category.join(",")}</div>
+                              )
+                          )
+                          .reduce((prev, curr) => [prev, "", curr])}
+                    </td>
+                    <td>
+                      {item.customer_transactions &&
+                        item.customer_transactions.length > 0 &&
+                        item.customer_transactions
+                          .map(
+                            (item, my_index) =>
+                              my_index > 0 && <div>{item.sale_branch}</div>
+                          )
+                          .reduce((prev, curr) => [prev, "", curr])}
+                    </td>
+                    <td>
+                      {item.customer_transactions &&
+                        item.customer_transactions.length > 0 &&
+                        item.customer_transactions
+                          .map(
+                            (item, my_index) =>
+                              my_index > 0 && <div>{item.sale_person}</div>
+                          )
+                          .reduce((prev, curr) => [prev, "", curr])}
+                    </td>
+                    <td>
+                      {item.customer_transactions &&
+                        item.customer_transactions.length > 0 &&
+                        item.customer_transactions
+                          .map(
+                            (item, my_index) =>
+                              my_index > 0 && <div>{item.channel}</div>
+                          )
+                          .reduce((prev, curr) => [prev, "", curr])}
+                    </td>
                     <td>
                       {item.dt &&
                         moment.unix(item.dt).format("DD/MM/YYYY HH:mm:ss")}
