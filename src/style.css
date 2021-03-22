@@ -67,6 +67,22 @@ a {
   color: #6a6a6a;
 }
 
+table,
+th,
+td {
+  border: 1px solid black;
+}
+
+tr:nth-child(even) {
+  color: black;
+  background-color: #f2f2f2;
+}
+
+tr:nth-child(odd) {
+  color: black;
+  background-color: rgb(168, 168, 168);
+}
+
 .responsive {
   overflow-x: auto;
   border-collapse: collapse;
@@ -112,23 +128,34 @@ a {
   color: black !important;
 }
 
+thead > tr:nth-child(1) {
+  background-color: #000;
+  color: white;
+}
+
 thead > tr:nth-child(1) > th:nth-child(5) {
   background-color: #ffdead;
+  color: black;
 }
 thead > tr:nth-child(1) > th:nth-child(6) {
   background-color: #ffc368;
+  color: black;
 }
 thead > tr:nth-child(1) > th:nth-child(7) {
   background-color: #f19a17;
+  color: black;
 }
 thead > tr:nth-child(2) > th:nth-child(n) {
   background-color: #ffdead;
+  color: black;
 }
 thead > tr:nth-child(2) > th:nth-child(n + 5) {
   background-color: #ffc368;
+  color: black;
 }
 thead > tr:nth-child(2) > th:nth-child(n + 10) {
   background-color: #f19a17;
+  color: black;
 }
 
 input,
