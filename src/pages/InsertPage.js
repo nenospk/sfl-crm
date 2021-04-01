@@ -731,6 +731,7 @@ const Auto = props => {
       />
       <div className={"autocomplete"}>
         {display &&
+          options &&
           options
             .filter(
               option =>
