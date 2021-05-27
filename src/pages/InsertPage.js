@@ -49,6 +49,7 @@ export default function InsertPage() {
         channel: "offline",
         lead_reason: "",
         lead_otherReason: "",
+        lead_category: [],
         lead_sales: "",
         customer_so: "",
         customer_sales: "",
@@ -81,6 +82,7 @@ export default function InsertPage() {
           currentCustomer && currentCustomer.lead_otherReason != undefined
             ? currentCustomer.lead_otherReason
             : "",
+        lead_category: [],
         lead_sales:
           currentCustomer && currentCustomer.lead_sales != undefined
             ? currentCustomer.lead_sales
@@ -157,7 +159,8 @@ export default function InsertPage() {
           validationSchema={formValidation}
           validateOnChange={false}
           validateOnBlur={false}
-          onSubmit={async (values, { setSubmitting }) => {
+          
+          onSubmit={async (values, { setSubmitting,resetForm }) => {
             console.log(values);
             setSubmitting(true);
             setLoading(true);
@@ -430,6 +433,83 @@ export default function InsertPage() {
                       มากกว่า 500,000 บาท
                     </option>
                   </select>
+                  <label className="formError">
+                    {errors.lead_category && errors.lead_category}
+                  </label>
+                  <div className="checkbox-tile-group">
+                    <div className="input-checkbox-container">
+                      <Field
+                        type="checkbox"
+                        className="checkbox-button"
+                        name="lead_category"
+                        value="จักรยาน"
+                      />
+                      <div className="checkbox-tile">จักรยาน</div>
+                    </div>
+                    <div className="input-checkbox-container">
+                      <Field
+                        type="checkbox"
+                        className="checkbox-button"
+                        name="lead_category"
+                        value="เฟรมจักรยาน"
+                      />
+                      <div className="checkbox-tile">เฟรมจักรยาน</div>
+                    </div>
+                    <div className="input-checkbox-container">
+                      <Field
+                        type="checkbox"
+                        className="checkbox-button"
+                        name="lead_category"
+                        value="ส่วนประกอบ"
+                      />
+                      <div className="checkbox-tile">ส่วนประกอบ</div>
+                    </div>
+                    <div className="input-checkbox-container">
+                      <Field
+                        type="checkbox"
+                        className="checkbox-button"
+                        name="lead_category"
+                        value="เครื่องแต่งกาย"
+                      />
+                      <div className="checkbox-tile">เครื่องแต่งกาย</div>
+                    </div>
+                    <div className="input-checkbox-container">
+                      <Field
+                        type="checkbox"
+                        className="checkbox-button"
+                        name="lead_category"
+                        value="อุปกรณ์ตกแต่ง"
+                      />
+                      <div className="checkbox-tile">อุปกรณ์ตกแต่ง </div>
+                    </div>
+                    <div className="input-checkbox-container">
+                      <Field
+                        type="checkbox"
+                        className="checkbox-button"
+                        name="lead_category"
+                        value="สมาร์ทวอทช์"
+                      />
+                      <div className="checkbox-tile">สมาร์ทวอทช์</div>
+                    </div>
+                    <div className="input-checkbox-container">
+                      <Field
+                        type="checkbox"
+                        className="checkbox-button"
+                        name="lead_category"
+                        value="บริการ"
+                      />
+                      <div className="checkbox-tile">บริการ</div>
+                    </div>
+                    <div className="input-checkbox-container">
+                      <Field
+                        type="checkbox"
+                        className="checkbox-button"
+                        name="lead_category"
+                        value="อื่นๆ"
+                      />
+                      <div className="checkbox-tile">อื่นๆ</div>
+                    </div>
+                  </div>
                 </div>
               ) : (
                 ""
@@ -647,7 +727,7 @@ export default function InsertPage() {
                     setCurrentCustomer();
                     setPhoneSearch("");
                     setCurrentStage();
-                    resetForm;
+                    resetForm();
                   }}
                 >
                   ล้างค่า
@@ -721,7 +801,7 @@ const Auto = props => {
         }}
         value={props.phoneSearch}
         onChange={event => {
-          props.handleChange;
+          //props.handleChange;
           props.setCurrentSearch(event.target.value);
           if (event.target.value != "") setDisplay(true);
           else setDisplay(false);

@@ -11,6 +11,9 @@ export function useFirestore() {
 
 export function DataProvider({ children }) {
   const [customerList, setCustomerList] = useState();
+  const [targetList, setTargetList] = useState();
+  const [forecastList, setForecastList] = useState();
+  const [reportList, setReportList] = useState();
 
   useEffect(async () => {
     const ref = firebase.firestore().collection("customers");
@@ -30,6 +33,140 @@ export function DataProvider({ children }) {
     );
     return unsubscribe;
   }, []);
+
+  
+
+  useEffect(async () => {
+    const ref = firebase.firestore().collection("target");
+    const unsubscribe = ref.onSnapshot(
+      docSnapshot => {
+        let list = {};
+        docSnapshot.forEach(function(doc) {
+          //console.log(doc.data());
+          if(doc.id == "UCL") list.ucl = doc.data()
+          if(doc.id == "LKB") list.lkb = doc.data()
+          if(doc.id == "PTK") list.ptk = doc.data()
+        });
+        setTargetList(list);
+      },
+      err => {
+        console.log(`Encountered error: ${err}`);
+      }
+    );
+    return unsubscribe;
+  }, []);
+
+  useEffect(async () => {
+    const ref = firebase.firestore().collection("forecast");
+    const unsubscribe = ref.onSnapshot(
+      docSnapshot => {
+        let list = {};
+        docSnapshot.forEach(function(doc) {
+          //console.log(doc.data());
+          list[doc.id] = doc.data();
+        });
+        setForecastList(list);
+      },
+      err => {
+        console.log(`Encountered error: ${err}`);
+      }
+    );
+    return unsubscribe;
+  }, []);
+
+  useEffect(async () => {
+    const ref = firebase.firestore().collection("reports");
+    const unsubscribe = ref.onSnapshot(
+      docSnapshot => {
+        let list = {};
+        docSnapshot.forEach(function(doc) {
+          //console.log(doc.data());
+          list[doc.id] = doc.data();
+        });
+        setReportList(list);
+      },
+      err => {
+        console.log(`Encountered error: ${err}`);
+      }
+    );
+    return unsubscribe;
+  }, []);
+
+  async function updateReport(year, week, reports) {
+    try {
+      await firebase
+        .firestore()
+        .collection("reports")
+        .doc(year+"-"+week)
+        .set(reports);
+      console.log("SUCCESS REPORT GOAL");
+      return {
+        status: "success",
+        message: "บันทึกข้อมูลสำเร็จ"
+      };
+    } catch (error) {
+      console.log("ERROR REPORT GOAL", error);
+      return {
+        status: "error",
+        message: "บันทึกข้อมูลผิดพลาด"
+      };
+    }
+  }
+
+  async function updateForecast(year, week, forecast) {
+    try {
+      await firebase
+        .firestore()
+        .collection("forecast")
+        .doc(year+"-"+week)
+        .set(forecast);
+      console.log("SUCCESS FORECAST GOAL");
+      return {
+        status: "success",
+        message: "บันทึกข้อมูลสำเร็จ"
+      };
+    } catch (error) {
+      console.log("ERROR FORECAST GOAL", error);
+      return {
+        status: "error",
+        message: "บันทึกข้อมูลผิดพลาด"
+      };
+    }
+  }
+
+  async function updateTarget(year, goal) {
+    let ucl_goal = {[year] : goal.ucl};
+    let lkb_goal = {[year] : goal.lkb};
+    let ptk_goal = {[year] : goal.ptk};
+    try {
+      await firebase
+        .firestore()
+        .collection("target")
+        .doc("UCL")
+        .set(ucl_goal);
+      await firebase
+        .firestore()
+        .collection("target")
+        .doc("LKB")
+        .set(lkb_goal);
+      await firebase
+        .firestore()
+        .collection("target")
+        .doc("PTK")
+        .set(ptk_goal);
+      console.log("SUCCESS UPDATE GOAL");
+      return {
+        status: "success",
+        message: "บันทึกข้อมูลสำเร็จ"
+      };
+    } catch (error) {
+      console.log("ERROR UPDATE GOAL", error);
+      return {
+        status: "error",
+        message: "บันทึกข้อมูลผิดพลาด"
+      };
+    }
+  }
 
   async function addCustomer(newData, currentCustomer) {
     //console.log("1", newData);
@@ -108,6 +245,6 @@ export function DataProvider({ children }) {
     }
   }
 
-  const values = { customerList, addCustomer };
+  const values = { forecastList,customerList, targetList, reportList, addCustomer, updateTarget, updateForecast, updateReport };
   return <AuthContext.Provider value={values}>{children}</AuthContext.Provider>;
 }

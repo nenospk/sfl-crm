@@ -4,7 +4,8 @@ import { Route, BrowserRouter as Router, Switch, Link } from "react-router-dom";
 import InsertPage from "./pages/InsertPage";
 import ViewPage from "./pages/ViewPage";
 import Dashboard from "./pages/Dashboard";
-import Signout from "./pages/Signout";
+import Account from "./pages/Account";
+import Report from "./pages/Report";
 
 import { DataProvider } from "./pages/Firestore";
 
@@ -30,8 +31,12 @@ export default function App() {
             render={props => <Dashboard {...props} isAuthed={true} />}
           />
           <Route
-            path="/signout"
-            render={props => <Signout {...props} isAuthed={true} />}
+            path="/account"
+            render={props => <Account {...props} isAuthed={true} />}
+          />
+          <Route
+            path="/report"
+            render={props => <Report {...props} isAuthed={true} />}
           />
         </Switch>
       </DataProvider>

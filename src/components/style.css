@@ -51,3 +51,125 @@
   background: #c2986e;
   border-radius: 100px 100px 0 0;
 }
+
+.report {
+  position: relative;
+  width: 210mm;
+  height: 267mm;
+  padding: 10mm;
+  margin: 15mm auto;
+  border: 1px #D3D3D3 solid;
+  border-radius: 5px;
+  background: white;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  color: black;
+}
+
+.report .wrapper-one {
+  display: grid;
+  grid-template-columns: 1fr;
+}
+
+.report .wrapper-two {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.report .wrapper-one div, .report .wrapper-two div {
+}
+
+.report .graph {
+  max-height: 350px;
+  color: black;
+  background-color: #eee;
+  padding: 1rem;
+  height: 100%;
+  border-radius: 25px;
+}
+
+.report .wrapper-two .graph:nth-child(2n-1) {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.report .wrapper-two .graph:nth-child(2n) {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.report table, .targetSetting {
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+  width: 100%;
+}
+
+.report table th, .targetSetting th {
+  padding: 7px 9px;
+}
+
+.report table td, .targetSetting td {
+  padding: 5px 9px;
+}
+
+.report .graph:first-child div {
+  min-height: 300px;
+  padding-bottom: 40px;
+}
+
+.report .graph {
+  margin-bottom: 20px;
+}
+
+.report textarea{
+  margin-top: 15px;
+  width: 100%;
+  padding: 10px;
+  min-height: 200px;
+}
+
+.reportCover {
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+
+@page {
+  size: A4;
+  margin: 0;
+}
+
+@media print {
+  .page {
+      margin: 0;
+      border: initial;
+      border-radius: initial;
+      width: initial;
+      min-height: initial;
+      box-shadow: initial;
+      background: initial;
+      page-break-after: always;
+  }
+}
+
+.my-container {
+  margin-top: 20px;
+  padding-left: 30px;
+  padding-right: 30px;
+}
+
+.my-container button {
+  width: fit-content;
+  margin-right: 10px;
+}
+
+.success {
+  background-color: #63cd6c;
+  text-align: center;
+  padding: 15px 0;
+  border-radius: 15px;
+  margin-bottom: 15px;;
+}

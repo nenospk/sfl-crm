@@ -167,14 +167,14 @@ export default function ViewPage() {
                     <td>{item.sale_person && item.sale_person}</td>
                     <td>{item.channel && item.channel}</td>
                     <td>
-                      {item.customer_transactions &&
+                      {item.customer_transactions ? (item.customer_transactions &&
                         item.customer_transactions.length > 0 &&
                         item.customer_transactions
                           .map(
                             (item, my_index) =>
                               my_index == 0 && <div>{item.customer_sales}</div>
                           )
-                          .reduce((prev, curr) => [prev, "", curr], "")}
+                          .reduce((prev, curr) => [prev, "", curr], "")) : "-"}
                     </td>
                     <td>
                       {item.customer_transactions &&

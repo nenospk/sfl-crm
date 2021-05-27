@@ -56,7 +56,7 @@ export default function Navbar(props) {
           </Link>
 
           <Link
-            to="/signout"
+            to="/account"
             className={
               "nav-item " + (props.active == "ออกจากระบบ" ? "active" : "")
             }
@@ -64,7 +64,7 @@ export default function Navbar(props) {
             <div className="nav-holder">
               <img src={navSignout} className="nav-icn" />
               <div className="line-break" />
-              <div className="nav_content">ออกจากระบบ</div>
+              <div className="nav_content">Setting</div>
             </div>
             <div className={"nav_status ช"} />
           </Link>
