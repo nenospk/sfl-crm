@@ -8,7 +8,7 @@ import Navbar from "../components/Navbar";
 import logo from "../img/header_logo.svg";
 import * as Yup from "yup";
 import { Formik } from "formik";
-import { Link, useHistory } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import LoadingBar from "../components/LoadingBar";
 import SuccessBar from "../components/SuccessBar";

@@ -18,38 +18,36 @@ export function DataProvider({ children }) {
   useEffect(async () => {
     const ref = firebase.firestore().collection("customers");
     const unsubscribe = ref.onSnapshot(
-      docSnapshot => {
+      (docSnapshot) => {
         let list = [];
-        docSnapshot.forEach(function(doc) {
+        docSnapshot.forEach(function (doc) {
           //console.log(doc.data());
           list.push({ myref: doc.id, ...doc.data() });
         });
         list = list.sort((a, b) => b.dt_lastupdate - a.dt_lastupdate);
         setCustomerList(list);
       },
-      err => {
+      (err) => {
         console.log(`Encountered error: ${err}`);
       }
     );
     return unsubscribe;
   }, []);
 
-  
-
   useEffect(async () => {
     const ref = firebase.firestore().collection("target");
     const unsubscribe = ref.onSnapshot(
-      docSnapshot => {
+      (docSnapshot) => {
         let list = {};
-        docSnapshot.forEach(function(doc) {
+        docSnapshot.forEach(function (doc) {
           //console.log(doc.data());
-          if(doc.id == "UCL") list.ucl = doc.data()
-          if(doc.id == "LKB") list.lkb = doc.data()
-          if(doc.id == "PTK") list.ptk = doc.data()
+          if (doc.id == "UCL") list.ucl = doc.data();
+          if (doc.id == "LKB") list.lkb = doc.data();
+          if (doc.id == "PTK") list.ptk = doc.data();
         });
         setTargetList(list);
       },
-      err => {
+      (err) => {
         console.log(`Encountered error: ${err}`);
       }
     );
@@ -59,15 +57,15 @@ export function DataProvider({ children }) {
   useEffect(async () => {
     const ref = firebase.firestore().collection("forecast");
     const unsubscribe = ref.onSnapshot(
-      docSnapshot => {
+      (docSnapshot) => {
         let list = {};
-        docSnapshot.forEach(function(doc) {
+        docSnapshot.forEach(function (doc) {
           //console.log(doc.data());
           list[doc.id] = doc.data();
         });
         setForecastList(list);
       },
-      err => {
+      (err) => {
         console.log(`Encountered error: ${err}`);
       }
     );
@@ -77,15 +75,15 @@ export function DataProvider({ children }) {
   useEffect(async () => {
     const ref = firebase.firestore().collection("reports");
     const unsubscribe = ref.onSnapshot(
-      docSnapshot => {
+      (docSnapshot) => {
         let list = {};
-        docSnapshot.forEach(function(doc) {
+        docSnapshot.forEach(function (doc) {
           //console.log(doc.data());
           list[doc.id] = doc.data();
         });
         setReportList(list);
       },
-      err => {
+      (err) => {
         console.log(`Encountered error: ${err}`);
       }
     );
@@ -97,18 +95,18 @@ export function DataProvider({ children }) {
       await firebase
         .firestore()
         .collection("reports")
-        .doc(year+"-"+week)
+        .doc(year + "-" + week)
         .set(reports);
       console.log("SUCCESS REPORT GOAL");
       return {
         status: "success",
-        message: "บันทึกข้อมูลสำเร็จ"
+        message: "บันทึกข้อมูลสำเร็จ",
       };
     } catch (error) {
       console.log("ERROR REPORT GOAL", error);
       return {
         status: "error",
-        message: "บันทึกข้อมูลผิดพลาด"
+        message: "บันทึกข้อมูลผิดพลาด",
       };
     }
   }
@@ -118,52 +116,40 @@ export function DataProvider({ children }) {
       await firebase
         .firestore()
         .collection("forecast")
-        .doc(year+"-"+week)
+        .doc(year + "-" + week)
         .set(forecast);
       console.log("SUCCESS FORECAST GOAL");
       return {
         status: "success",
-        message: "บันทึกข้อมูลสำเร็จ"
+        message: "บันทึกข้อมูลสำเร็จ",
       };
     } catch (error) {
       console.log("ERROR FORECAST GOAL", error);
       return {
         status: "error",
-        message: "บันทึกข้อมูลผิดพลาด"
+        message: "บันทึกข้อมูลผิดพลาด",
       };
     }
   }
 
   async function updateTarget(year, goal) {
-    let ucl_goal = {[year] : goal.ucl};
-    let lkb_goal = {[year] : goal.lkb};
-    let ptk_goal = {[year] : goal.ptk};
+    let ucl_goal = { [year]: goal.ucl };
+    let lkb_goal = { [year]: goal.lkb };
+    let ptk_goal = { [year]: goal.ptk };
     try {
-      await firebase
-        .firestore()
-        .collection("target")
-        .doc("UCL")
-        .set(ucl_goal);
-      await firebase
-        .firestore()
-        .collection("target")
-        .doc("LKB")
-        .set(lkb_goal);
-      await firebase
-        .firestore()
-        .collection("target")
-        .doc("PTK")
-        .set(ptk_goal);
+      await firebase.firestore().collection("target").doc("UCL").set(ucl_goal);
+      await firebase.firestore().collection("target").doc("LKB").set(lkb_goal);
+      await firebase.firestore().collection("target").doc("PTK").set(ptk_goal);
       console.log("SUCCESS UPDATE GOAL");
       return {
         status: "success",
-        message: "บันทึกข้อมูลสำเร็จ"
+        message: "บันทึกข้อมูลสำเร็จ",
       };
     } catch (error) {
       console.log("ERROR UPDATE GOAL", error);
       return {
         status: "error",
-        message: "บันทึกข้อมูลผิดพลาด"
+        message: "บันทึกข้อมูลผิดพลาด",
       };
     }
   }
@@ -189,7 +175,7 @@ export function DataProvider({ children }) {
         sale_person: newData.sale_person,
         sale_branch: newData.sale_branch,
         channel: newData.channel,
-        dt: moment().unix()
+        dt: moment().unix(),
       };
       customer_transactions.push(transaction);
       delete newData.channel;
@@ -214,13 +200,13 @@ export function DataProvider({ children }) {
         console.log("SUCCESS UPDATE");
         return {
           status: "success",
-          message: "อัพเดทข้อมูลสำเร็จ"
+          message: "อัพเดทข้อมูลสำเร็จ",
         };
       } catch (error) {
         console.log("ERROR UPDATE", error);
         return {
           status: "success",
-          message: "อัพเดทข้อมูลผิดพลาด"
+          message: "อัพเดทข้อมูลผิดพลาด",
         };
       }
     } else {
@@ -233,18 +219,27 @@ export function DataProvider({ children }) {
         console.log("SUCCESS ADD");
         return {
           status: "success",
-          message: "เพิ่มข้อมูลสำเร็จ"
+          message: "เพิ่มข้อมูลสำเร็จ",
         };
       } catch (error) {
         console.log("ERROR ADD", error);
         return {
           status: "error",
-          message: "เพิ่มข้อมูลผิดพลาด"
+          message: "เพิ่มข้อมูลผิดพลาด",
         };
       }
     }
   }
 
-  const values = { forecastList,customerList, targetList, reportList, addCustomer, updateTarget, updateForecast, updateReport };
+  const values = {
+    forecastList,
+    customerList,
+    targetList,
+    reportList,
+    addCustomer,
+    updateTarget,
+    updateForecast,
+    updateReport,
+  };
   return <AuthContext.Provider value={values}>{children}</AuthContext.Provider>;
 }

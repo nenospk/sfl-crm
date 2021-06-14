@@ -634,17 +634,17 @@ export default function Report() {
                         <td>{parseInt((targetList !== undefined && targetList.ucl["2021"][4] ? targetList.ucl["2021"][4] : 0 )*1/week(2021,5))}</td>
                         <td></td>
                         <td></td>
-                        <td></td>
+                        <td>{parseInt((targetList !== undefined && targetList.ucl["2021"][4] ? targetList.ucl["2021"][4] : 0 )*1/week(2021,5))}</td>
                       </tr>
                       <tr>
                         <td>vs Target</td>
-                        <td>-</td>
+                        <td>-1,543,706</td>
+                        <td>987,713</td>
+                        <td>-36,236</td>
+                        <td>961,787</td>
                         <td></td>
                         <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
+                        <td>{formatted(values.sales - parseInt((targetList !== undefined && targetList.ucl["2021"][4] ? targetList.ucl["2021"][4] : 0 )*1/week(2021,5)))}</td>
                       </tr>
                       <tr>
                         <td>จำนวน Customers</td>
