@@ -29,7 +29,7 @@ export default function InsertPage() {
   const [branches, setBranches] = useState([
     { name: "พระรามสี่", sale: ["เนส", "ชมพู่", "จีน่า", "นิด", "นนท์"] },
     { name: "พัฒนาการ", sale: ["สิท", "ตอง", "เบ๊บ", "เบญ", "วิคเตอร์"] },
-    { name: "ลาดกระบัง", sale: ["ตูน", "ส้ม", "โจ้", "โป๊บ"] }
+    { name: "ลาดกระบัง", sale: ["ตูน", "ส้ม", "โจ้", "โป๊บ"] },
   ]);
   const [selectedBranch, setSelectedBranch] = useState();
   const [otherReason, setOtherReason] = useState(false);
@@ -53,7 +53,7 @@ export default function InsertPage() {
         lead_sales: "",
         customer_so: "",
         customer_sales: "",
-        customer_category: []
+        customer_category: [],
       });
     } else {
       setInitialForm({
@@ -89,17 +89,14 @@ export default function InsertPage() {
             : "",
         customer_so: "",
         customer_sales: "",
-        customer_category: []
+        customer_category: [],
       });
     }
   }, [currentCustomer, currentSearch, currentStage]);
 
   function numberWithCommas(num) {
     if (num) {
-      var num_parts = num
-        .toString()
-        .replace(/,/g, "")
-        .split(".");
+      var num_parts = num.toString().replace(/,/g, "").split(".");
       num_parts[0] = num_parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
       return num_parts.join(".");
     } else return "";
@@ -118,25 +115,25 @@ export default function InsertPage() {
     sale_person: Yup.string().required("*กรุณากรอก"),
     sale_branch: Yup.string().required("*กรุณากรอก"),
     lead_reason: Yup.string().when("stage", {
-      is: value => value == "Lead",
-      then: Yup.string().required("*กรุณากรอก")
+      is: (value) => value == "Lead",
+      then: Yup.string().required("*กรุณากรอก"),
     }),
     lead_otherReason: Yup.string().when("lead_reason", {
-      is: value => value == "อื่นๆ",
-      then: Yup.string().required("*กรุณากรอก")
+      is: (value) => value == "อื่นๆ",
+      then: Yup.string().required("*กรุณากรอก"),
     }),
     lead_sales: Yup.string().when("stage", {
-      is: value => value == "Lead",
-      then: Yup.string().required("*กรุณากรอก")
+      is: (value) => value == "Lead",
+      then: Yup.string().required("*กรุณากรอก"),
     }),
     customer_sales: Yup.string().when("stage", {
-      is: value => value == "Customer" || value == "Expansion",
-      then: Yup.string().required("*กรุณากรอก")
+      is: (value) => value == "Customer" || value == "Expansion",
+      then: Yup.string().required("*กรุณากรอก"),
     }),
     customer_so: Yup.string().when("stage", {
-      is: value => value == "Customer" || value == "Expansion",
-      then: Yup.string().required("*กรุณากรอก")
-    })
+      is: (value) => value == "Customer" || value == "Expansion",
+      then: Yup.string().required("*กรุณากรอก"),
+    }),
   });
 
   return (
@@ -159,8 +156,7 @@ export default function InsertPage() {
           validationSchema={formValidation}
           validateOnChange={false}
           validateOnBlur={false}
-          
-          onSubmit={async (values, { setSubmitting,resetForm }) => {
+          onSubmit={async (values, { setSubmitting, resetForm }) => {
             console.log(values);
             setSubmitting(true);
             setLoading(true);
@@ -191,9 +187,9 @@ export default function InsertPage() {
             handleSubmit,
             isSubmitting,
             setFieldValue,
-            resetForm
+            resetForm,
           }) => (
-            <form onSubmit={handleSubmit} className="insert-form">
+            <form className="insert-form">
               <div className="form-header">
                 <h1>CRM </h1>
                 <div>สวัสดี, SPORT FOR LIFE</div>
@@ -338,7 +334,7 @@ export default function InsertPage() {
                   <select
                     name="lead_reason"
                     value={values.lead_reason}
-                    onChange={e => {
+                    onChange={(e) => {
                       handleChange(e);
                       if (e.currentTarget.value === "อื่นๆ")
                         setOtherReason(true);
@@ -635,10 +631,10 @@ export default function InsertPage() {
               <select
                 name="sale_branch"
                 value={values.sale_branch || ""}
-                onChange={e => {
+                onChange={(e) => {
                   handleChange(e);
                   setSelectedBranch(
-                    branches.find(x => x.name === e.currentTarget.value)
+                    branches.find((x) => x.name === e.currentTarget.value)
                   );
                 }}
                 onBlur={handleBlur}
@@ -717,6 +713,7 @@ export default function InsertPage() {
                   className="mainButton"
                   type="submit"
                   disabled={isSubmitting}
+                  onClick={handleSubmit}
                 >
                   {currentCustomer ? "อัพเดท" : "เพิ่ม"}
                 </button>
@@ -742,7 +739,7 @@ export default function InsertPage() {
   );
 }
 
-const Auto = props => {
+const Auto = (props) => {
   const { customerList } = useFirestore();
   const [display, setDisplay] = useState(false);
   const [options, setOptions] = useState();
@@ -772,7 +769,7 @@ const Auto = props => {
     return -1;
   }
 
-  const selectAuto = option => {
+  const selectAuto = (option) => {
     props.setPhoneSearch(option.phone);
     props.setCurrentSearch(option.phone);
     props.setCurrentCustomer(option);
@@ -800,7 +797,7 @@ const Auto = props => {
           setDisplay(!display);
         }}
         value={props.phoneSearch}
-        onChange={event => {
+        onChange={(event) => {
           //props.handleChange;
           props.setCurrentSearch(event.target.value);
           if (event.target.value != "") setDisplay(true);
@@ -814,7 +811,7 @@ const Auto = props => {
           options &&
           options
             .filter(
-              option =>
+              (option) =>
                 option.phone &&
                 option.phone
                   .toLowerCase()

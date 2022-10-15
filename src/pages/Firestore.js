@@ -24,7 +24,8 @@ export function DataProvider({ children }) {
           //console.log(doc.data());
           list.push({ myref: doc.id, ...doc.data() });
         });
-        list = list.sort((a, b) => b.dt_lastupdate - a.dt_lastupdate);
+        list = list.sort((a, b) => b.dt - a.dt);
+        console.log(list);
         setCustomerList(list);
       },
       (err) => {

@@ -20,14 +20,28 @@ export default function ViewPage() {
   const [success, setSuccess] = useState();
   const [loading, setLoading] = useState(false);
   const [showPicker, setShowPicker] = useState(false);
+  const [customerListFilter, setCustomerListFilter] = useState([]);
+  const [selectedBranch, setSelectedBranch] = useState("ทั้งหมด");
 
   const [selectedDate, setSelectedDate] = useState([
     {
       startDate: new Date(),
       endDate: new Date(),
-      key: "selection"
-    }
+      key: "selection",
+    },
   ]);
+
+  useEffect(() => {
+    // console.log(customerList);
+    // console.log(selectedBranch);
+    const result = customerList
+      ? customerList.filter((customer) => {
+          if (selectedBranch == "ทั้งหมด") return true;
+          else return customer.sale_branch == selectedBranch;
+        })
+      : [];
+    setCustomerListFilter(result);
+  }, [customerList, selectedBranch]);
 
   return (
     <>
@@ -49,6 +63,20 @@ export default function ViewPage() {
         <button onClick={() => setFilterList()} className={"resetDate"}>
           ล้างค่า
         </button>
+        <div
+          style={{
+            width: "200px;",
+            display: "inline-block",
+            marginLeft: "10px",
+          }}
+        >
+          <select onChange={(e) => setSelectedBranch(e.target.value)}>
+            <option>ทั้งหมด</option>
+            <option>พระรามสี่</option>
+            <option>ลาดกระบัง </option>
+            <option>พัฒนาการ</option>
+          </select>
+        </div>
         {/*
         <div style={{ marginLeft: "25px" }}>
           {selectedDate && moment(selectedDate.startDate).format("DD/MM/YYYY")}{" "}
@@ -59,7 +87,7 @@ export default function ViewPage() {
           <div style={{ position: "relative" }}>
             <DateRange
               editableDateInputs={true}
-              onChange={item => {
+              onChange={(item) => {
                 setSelectedDate([item.selection]);
                 //console.log(item.selection);
                 let startDate = moment(item.selection.startDate).unix();
@@ -76,11 +104,11 @@ export default function ViewPage() {
                   moment.unix(endDate).format("DD/MM/YYYY HH:mm:ss")
                 );
                 */
-                customerList.map(customer => {
+                customerListFilter.map((customer) => {
                   //console.log("DATE ", customer.dt);
                 });
                 setFilterList(
-                  customerList.filter(customer => {
+                  customerListFilter.filter((customer) => {
                     return startDate <= customer.dt && customer.dt <= endDate;
                   })
                 );
@@ -155,8 +183,8 @@ export default function ViewPage() {
                     </td>
                   </tr>
                 ))
-              : customerList &&
-                customerList.map((item, index) => (
+              : customerListFilter &&
+                customerListFilter.map((item, index) => (
                   <tr key={index}>
                     <td>{index + 1}</td>
                     <td>{item.name && item.name}</td>
@@ -167,14 +195,18 @@ export default function ViewPage() {
                     <td>{item.sale_person && item.sale_person}</td>
                     <td>{item.channel && item.channel}</td>
                     <td>
-                      {item.customer_transactions ? (item.customer_transactions &&
-                        item.customer_transactions.length > 0 &&
-                        item.customer_transactions
-                          .map(
-                            (item, my_index) =>
-                              my_index == 0 && <div>{item.customer_sales}</div>
-                          )
-                          .reduce((prev, curr) => [prev, "", curr], "")) : "-"}
+                      {item.customer_transactions
+                        ? item.customer_transactions &&
+                          item.customer_transactions.length > 0 &&
+                          item.customer_transactions
+                            .map(
+                              (item, my_index) =>
+                                my_index == 0 && (
+                                  <div>{item.customer_sales}</div>
+                                )
+                            )
+                            .reduce((prev, curr) => [prev, "", curr], "")
+                        : "-"}
                     </td>
                     <td>
                       {item.customer_transactions &&
